@@ -6,29 +6,39 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     public float speed;
-    public Vector2 InputVector;
-    Rigidbody2D rigid;
+
+    float Horizontal;
+
+    Rigidbody2D rb;
+
+    
 
     private void Awake()
     {
         Application.targetFrameRate = 75;
-        rigid = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    void Start()
+    private void Start()
     {
+        
+    }
+
+    private void Update()
+    {
+        Horizontal = Input.GetAxisRaw("Horizontal");
+
         
     }
 
     private void FixedUpdate()
     {
-        Vector2 nextPos = rigid.position + InputVector * speed * Time.deltaTime;
-        rigid.MovePosition(nextPos);
+        Move();
     }
 
-    void OnMove(InputValue value)
+    void Move()
     {
-        InputVector = value.Get<Vector2>();
+        rb.velocity = new Vector2(Horizontal * speed, rb.velocity.y);
     }
 
 }
