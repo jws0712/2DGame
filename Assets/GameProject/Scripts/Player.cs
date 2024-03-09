@@ -17,12 +17,15 @@ public class Player : MonoBehaviour
 
     Rigidbody2D rb;
 
-    
+    new SpriteRenderer renderer;
+
+
 
     private void Awake()
     {
         Application.targetFrameRate = 75;
         rb = GetComponent<Rigidbody2D>();
+        renderer = GetComponent<SpriteRenderer>();
     }
 
     private void Start()
@@ -39,6 +42,8 @@ public class Player : MonoBehaviour
         {
             IsJump = true;
         }
+
+        Xfilp();
 
     }
 
@@ -60,6 +65,20 @@ public class Player : MonoBehaviour
             rb.AddForce(Vector2.up * JumpPower, ForceMode2D.Impulse);
             IsJump = false;
         }
+    }
+
+    void Xfilp()
+    {
+        if(Horizontal < 0)
+        {
+            transform.localScale = new Vector3(-1f, 1f, 1f);
+        }
+        else if(Horizontal > 0)
+        {
+            transform.localScale = new Vector3(1f, 1f, 1f);
+
+        }
+
     }
 
     private void OnTriggerStay2D(Collider2D collision)
