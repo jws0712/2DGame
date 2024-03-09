@@ -5,14 +5,16 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    private float JumpTime;
+    public float JumpStartTime;
+    
     public float speed;
 
     public float JumpPower;
 
     private bool grounded;
 
-    private bool IsJump;
-    private bool IsJumpH;
+    public bool IsJump;
 
     float Horizontal;
 
@@ -37,18 +39,25 @@ public class Player : MonoBehaviour
     {
         grounded = false;
         IsJump = false;
-        IsJumpH = false;
     }
 
     private void Update()
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
+        Jump();
+        Xfilp();
 
-        if (Input.GetKeyDown(JumpKey) && grounded)
-        {
-            IsJump = true;
-            animator.SetBool("IsJump", true);
-        }
+    }
+
+    private void FixedUpdate()
+    {
+        Move();
+
+    }
+
+    void Move()
+    {
+        rb.velocity = new Vector2(Horizontal * speed, rb.velocity.y);
 
         if (rb.velocity.x == 0)
         {
@@ -58,30 +67,28 @@ public class Player : MonoBehaviour
         {
             animator.SetTrigger("Walk");
         }
-
-        Xfilp();
-
-    }
-
-    private void FixedUpdate()
-    {
-        Move();
-        Jump();
-    }
-
-    void Move()
-    {
-        rb.velocity = new Vector2(Horizontal * speed, rb.velocity.y);
-
-
     }
 
     void Jump()
     {
-        if (IsJump)
+        if (Input.GetKeyDown(JumpKey) && grounded)
         {
-            rb.AddForce(Vector2.up * JumpPower, ForceMode2D.Impulse);
-            IsJump = false;
+            IsJump = true;
+            JumpTime = JumpStartTime;
+            rb.velocity = Vector2.up * JumpPower;
+            animator.SetBool("IsJump", true);
+        }
+        else if (Input.GetKey(JumpKey) && IsJump)
+        {
+            if(JumpTime > 0)
+            {
+                rb.velocity = Vector2.up * JumpPower;
+                JumpTime -= Time.deltaTime;
+            }
+            else
+            {
+                IsJump = false;
+            }
         }
     }
 
