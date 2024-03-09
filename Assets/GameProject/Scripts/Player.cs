@@ -12,12 +12,17 @@ public class Player : MonoBehaviour
     private bool grounded;
 
     private bool IsJump;
+    private bool IsJumpH;
 
     float Horizontal;
 
     Rigidbody2D rb;
 
-    new SpriteRenderer renderer;
+    Animator animator;
+
+    [Header("Keybord")]
+    public KeyCode JumpKey = KeyCode.Space;
+
 
 
 
@@ -25,22 +30,33 @@ public class Player : MonoBehaviour
     {
         Application.targetFrameRate = 75;
         rb = GetComponent<Rigidbody2D>();
-        renderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
     }
 
     private void Start()
     {
         grounded = false;
         IsJump = false;
+        IsJumpH = false;
     }
 
     private void Update()
     {
         Horizontal = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetKeyDown(KeyCode.Space) && grounded)
+        if (Input.GetKeyDown(JumpKey) && grounded)
         {
             IsJump = true;
+            animator.SetBool("IsJump", true);
+        }
+
+        if (rb.velocity.x == 0)
+        {
+            animator.SetTrigger("Idle");
+        }
+        else
+        {
+            animator.SetTrigger("Walk");
         }
 
         Xfilp();
@@ -56,6 +72,8 @@ public class Player : MonoBehaviour
     void Move()
     {
         rb.velocity = new Vector2(Horizontal * speed, rb.velocity.y);
+
+
     }
 
     void Jump()
@@ -81,15 +99,18 @@ public class Player : MonoBehaviour
 
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             grounded = true;
+            animator.SetTrigger("Idle");
+            animator.SetBool("IsJump", false);
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
         grounded = false;
+        
     }
 }
