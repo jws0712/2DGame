@@ -1771,9 +1771,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 10
   maxSpeed: 7
-  Drag: 5
-  Changedir: {fileID: 21300000, guid: 0b1c2abe20673ea49b737be89880c8ac, type: 2}
-  waitTime: 0.5
+  Drag: 4
+  waitTime: 0.4
+  changeMoment: 3
+  JumpSpeed: 8
+  Ground:
+    serializedVersion: 2
+    m_Bits: 64
+  groundLength: 0.6
+  gravity: 1
+  fallMultiplier: 0.6
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
