@@ -1770,7 +1770,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveSpeed: 10
-  maxSpeed: 7
+  maxSpeed: 12
   Drag: 4
   waitTime: 0.4
   changeMoment: 3
@@ -1780,7 +1780,7 @@ MonoBehaviour:
     m_Bits: 64
   groundLength: 0.6
   gravity: 1
-  fallMultiplier: 0.6
+  fallMultiplier: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

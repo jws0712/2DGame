@@ -26,14 +26,13 @@ public class NewPlayerMovement : MonoBehaviour
 
     Rigidbody2D rb;
     Animator anim;
-    new SpriteRenderer renderer;
+
 
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        renderer = GetComponent<SpriteRenderer>();
     }
     void Start()
     {
@@ -54,6 +53,7 @@ public class NewPlayerMovement : MonoBehaviour
 
         anim.SetFloat("Horizontal", Mathf.Abs(dir.x));
 
+        anim.SetFloat("AnimSpeed", Mathf.Abs(rb.velocity.x) * 0.2f);
     }
 
     private void FixedUpdate()
@@ -66,14 +66,10 @@ public class NewPlayerMovement : MonoBehaviour
     {
         rb.AddForce(Vector2.right * Horizontal * MoveSpeed);
 
-        if (Mathf.Abs(rb.velocity.x) < 0.001f)
-        {
-            rb.velocity = new Vector2(0f, rb.velocity.y);
-        }
 
         if ((Horizontal < 0 && faceRight) || (Horizontal > 0 && !faceRight))
         {
-            if(Mathf.Abs(rb.velocity.x) > changeMoment || Mathf.Abs(rb.velocity.x) < -changeMoment)
+            if(Mathf.Abs(rb.velocity.x) > changeMoment)
             {
                 StartCoroutine(PlayerFlip());
             }
@@ -91,16 +87,17 @@ public class NewPlayerMovement : MonoBehaviour
     }
     void Jump()
     {
-        rb.velocity = new Vector2(rb.velocity.x, 0);
         rb.AddForce(Vector2.up * JumpSpeed, ForceMode2D.Impulse);
     }
     void Physics()
     {
+        bool changingDir = (dir.x > 0 && rb.velocity.x < 0) || (dir.x < 0 && rb.velocity.x > 0);
 
+        //¶¥¿¡ ´ê¾ÒÀ»¶¼
         if (OnGround)
         {
             anim.SetBool("IsJump", false);
-            if (Mathf.Abs(dir.x) < 0.4f)
+            if (Mathf.Abs(dir.x) < 0.4f || changingDir)
             {
                 rb.drag = Drag;
             }
@@ -110,15 +107,22 @@ public class NewPlayerMovement : MonoBehaviour
             }
             rb.gravityScale = 0;
         }
+        //¾È ´ê¾ÒÀ»¶§
         else
         {
             anim.SetBool("IsJump", true);
             rb.gravityScale = gravity;
             rb.drag = Drag * 0.15f;
+
+            //¿Ã¶ó°¡´ÂÁß
+
             if(rb.velocity.y < 0)
             {
                 rb.gravityScale = gravity * fallMultiplier;
             }
+
+            //³»·Á°¥¶§
+
             else if(rb.velocity.y > 0 && Input.GetButton("Jump"))
             {
                 rb.gravityScale = gravity * (fallMultiplier / 2);
@@ -136,8 +140,7 @@ public class NewPlayerMovement : MonoBehaviour
     IEnumerator PlayerFlip()
     {
         IsFlip = true;
-        faceRight = !faceRight;
-        transform.localScale = new Vector3(faceRight ? 1f : -1f, 1f, 1f);
+        flip();
         anim.SetBool("CDir", true);
         yield return new WaitForSeconds(waitTime);
         IsFlip = false;
