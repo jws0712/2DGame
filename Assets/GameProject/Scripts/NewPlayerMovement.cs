@@ -21,8 +21,10 @@ public class NewPlayerMovement : MonoBehaviour
     [SerializeField] private float groundLength = 0.6f;
     [SerializeField] private float gravity = 1f;
     [SerializeField] private float fallMultiplier = 5f;
-
+    [SerializeField] private Vector3 JumpOffset;
+    private bool IsJump;
     private bool OnGround = false;
+    private float saveX;
 
     Rigidbody2D rb;
     Animator anim;
@@ -42,7 +44,7 @@ public class NewPlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        OnGround = Physics2D.Raycast(transform.position, Vector2.down, groundLength, Ground);
+        OnGround = Physics2D.Raycast(transform.position + JumpOffset, Vector2.down, groundLength, Ground) || Physics2D.Raycast(transform.position - JumpOffset, Vector2.down, groundLength, Ground);
 
         if (Input.GetButtonDown("Jump") && OnGround)
         {
@@ -87,7 +89,9 @@ public class NewPlayerMovement : MonoBehaviour
     }
     void Jump()
     {
-        rb.AddForce(Vector2.up * JumpSpeed, ForceMode2D.Impulse);
+        rb.velocity = new Vector2(rb.velocity.x, 0);
+        rb.velocity = new Vector2(rb.velocity.x, JumpSpeed);
+        IsJump = true;
     }
     void Physics()
     {
@@ -96,9 +100,11 @@ public class NewPlayerMovement : MonoBehaviour
         //¶¥¿¡ ´ê¾ÒÀ»¶¼
         if (OnGround)
         {
+
             anim.SetBool("IsJump", false);
             if (Mathf.Abs(dir.x) < 0.4f || changingDir)
             {
+
                 rb.drag = Drag;
             }
             else
@@ -110,7 +116,12 @@ public class NewPlayerMovement : MonoBehaviour
         //¾È ´ê¾ÒÀ»¶§
         else
         {
-            anim.SetBool("IsJump", true);
+
+            if (IsJump)
+            {
+                anim.SetBool("IsJump", true);
+                IsJump = false;
+            }
             rb.gravityScale = gravity;
             rb.drag = Drag * 0.15f;
 
@@ -125,6 +136,7 @@ public class NewPlayerMovement : MonoBehaviour
 
             else if(rb.velocity.y > 0 && Input.GetButton("Jump"))
             {
+
                 rb.gravityScale = gravity * (fallMultiplier / 2);
             }
         }
@@ -149,6 +161,7 @@ public class NewPlayerMovement : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundLength);
+        Gizmos.DrawLine(transform.position + JumpOffset, transform.position + JumpOffset + Vector3.down * groundLength);
+        Gizmos.DrawLine(transform.position - JumpOffset, transform.position - JumpOffset + Vector3.down * groundLength);
     }
 }

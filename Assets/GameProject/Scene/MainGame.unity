@@ -1771,10 +1771,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 10
   maxSpeed: 12
-  Drag: 4
+  Drag: 8
   waitTime: 0.4
   changeMoment: 3
-  JumpSpeed: 8
+  JumpSpeed: 12
   Ground:
     serializedVersion: 2
     m_Bits: 64
