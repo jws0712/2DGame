@@ -24,6 +24,7 @@ public class NewPlayerMovement : MonoBehaviour
     [SerializeField] private Vector3 JumpOffset;
     private bool IsJump;
     private bool OnGround = false;
+    private bool OnGroundColl = false;
     private float saveX;
 
     Rigidbody2D rb;
@@ -45,6 +46,7 @@ public class NewPlayerMovement : MonoBehaviour
     void Update()
     {
         OnGround = Physics2D.Raycast(transform.position + JumpOffset, Vector2.down, groundLength, Ground) || Physics2D.Raycast(transform.position - JumpOffset, Vector2.down, groundLength, Ground);
+
 
         if (Input.GetButtonDown("Jump") && OnGround)
         {
@@ -90,7 +92,7 @@ public class NewPlayerMovement : MonoBehaviour
     void Jump()
     {
         rb.velocity = new Vector2(rb.velocity.x, 0);
-        rb.velocity = new Vector2(rb.velocity.x, JumpSpeed);
+        rb.AddForce(Vector2.up * JumpSpeed, ForceMode2D.Impulse);
         IsJump = true;
     }
     void Physics()
