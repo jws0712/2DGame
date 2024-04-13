@@ -26,22 +26,23 @@ public class PlayerController : MonoBehaviour {
         {
             //사망 시 처리를 더 이상 진행하지 않고 종료
             return;
-
-            if (Input.GetMouseButtonDown(0) && jumpCount < 2)
-            {
-                jumpCount++;
-                playerRigidbody.velocity = Vector2.zero;
-                playerRigidbody.AddForce(new Vector2(0, jumpForce));
-                playerAudio.Play();
-            }
-            else if(Input.GetMouseButtonUp(0) && playerRigidbody.velocity.y > 0)
-            {
-                playerRigidbody.velocity = playerRigidbody.velocity * 0.5f;
-            }
-
-            animator.SetBool("Grounded", isGrounded);
         }
-   }
+
+
+        if (Input.GetMouseButtonDown(0) && jumpCount < 2)
+        {
+            jumpCount++;
+            playerRigidbody.velocity = Vector2.zero;
+            playerRigidbody.AddForce(new Vector2(0, jumpForce));
+            playerAudio.Play();
+        }
+        else if (Input.GetMouseButtonUp(0) && playerRigidbody.velocity.y > 0)
+        {
+            playerRigidbody.velocity = playerRigidbody.velocity * 0.5f;
+        }
+
+        animator.SetBool("Grounded", isGrounded);
+    }
 
    private void Die() {
         // 사망 처리
